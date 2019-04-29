@@ -58,8 +58,13 @@ class LogEntryManager(models.Manager):
                 else:
                     self.filter(content_type=kwargs.get('content_type'), object_pk=kwargs.get('object_pk', '')).delete()
             # save LogEntry to same database instance is using
-            db = instance._state.db
-            return self.create(**kwargs) if db is None or db == '' else self.using(db).create(**kwargs)
+
+            # removendo linhas, pois deve salvar sempre no banco que esta o auditlog e não no banco de origem do model
+            # db = instance._state.db
+            # return self.create(**kwargs) if db is None or db == '' else self.using(db).create(**kwargs)
+
+            return self.create(**kwargs)
+
         return None
 
     def get_for_object(self, instance):
